@@ -1,5 +1,4 @@
-// src/Components/Navbar.js
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
 const Nav = styled.nav`
@@ -7,40 +6,56 @@ const Nav = styled.nav`
   top: 0;
   left: 0;
   right: 0;
-  z-index: 1000;
-  padding: 1.5rem 10%;
+  z-index: 100;
+  padding: 1.5rem 8%;
   display: flex;
   justify-content: space-between;
   align-items: center;
   background: ${(props) =>
-    props.scrolled ? 'rgba(10, 10, 10, 0.95)' : 'transparent'};
-  backdrop-filter: ${(props) => (props.scrolled ? 'blur(10px)' : 'none')};
-  transition: all 0.3s ease;
+    props.$scrolled ? 'rgba(3, 0, 20, 0.8)' : 'transparent'};
+  backdrop-filter: ${(props) => (props.$scrolled ? 'blur(20px)' : 'none')};
   border-bottom: ${(props) =>
-    props.scrolled ? '1px solid rgba(255, 255, 255, 0.1)' : 'none'};
+    props.$scrolled ? '1px solid rgba(139, 92, 246, 0.1)' : 'none'};
+  transition: all 0.3s ease;
+
+  @media (max-width: 768px) {
+    padding: 1.2rem 5%;
+  }
 `;
 
 const Logo = styled.div`
   font-size: 1.5rem;
   font-weight: 700;
-  background: linear-gradient(135deg, #8b5cf6, #6366f1);
+  background: linear-gradient(135deg, #8b5cf6, #3b82f6);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+
+  &:hover {
+    transform: scale(1.05);
+  }
 `;
 
-const NavLinks = styled.div`
+const NavLinks = styled.ul`
   display: flex;
-  gap: 2rem;
-  align-items: center;
+  gap: 2.5rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
 
   @media (max-width: 768px) {
-    gap: 1rem;
+    gap: 1.5rem;
+  }
+
+  @media (max-width: 480px) {
+    display: none;
   }
 `;
 
 const NavLink = styled.a`
-  color: white;
+  color: ${(props) => (props.$active ? '#8b5cf6' : '#d1d5db')};
   text-decoration: none;
   font-size: 0.95rem;
   font-weight: 500;
@@ -55,57 +70,55 @@ const NavLink = styled.a`
   &::after {
     content: '';
     position: absolute;
-    bottom: -5px;
+    bottom: -6px;
     left: 0;
-    width: 0;
+    right: 0;
     height: 2px;
-    background: #8b5cf6;
-    transition: width 0.3s ease;
+    background: linear-gradient(90deg, #8b5cf6, #3b82f6);
+    transform: scaleX(${(props) => (props.$active ? 1 : 0)});
+    transform-origin: left;
+    transition: transform 0.3s ease;
   }
 
   &:hover::after {
-    width: 100%;
+    transform: scaleX(1);
   }
 `;
 
-function Navbar() {
+function Navbar({ activeSection, scrollToSection }) {
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 50);
     };
+
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const handleClick = (e, targetId) => {
-    e.preventDefault();
-    const element = document.getElementById(targetId);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  };
+  const navItems = [
+    { id: 'home', label: 'Home' },
+    { id: 'about', label: 'About' },
+    { id: 'experience', label: 'Experience' },
+    { id: 'projects', label: 'Projects' },
+    { id: 'contact', label: 'Contact' },
+  ];
 
   return (
-    <Nav scrolled={scrolled}>
-      <Logo>Indragith</Logo>
+    <Nav $scrolled={scrolled}>
+      <Logo onClick={() => scrollToSection('home')}>Indragith</Logo>
       <NavLinks>
-        <NavLink href="#about" onClick={(e) => handleClick(e, 'about')}>
-          About
-        </NavLink>
-        <NavLink
-          href="#experience"
-          onClick={(e) => handleClick(e, 'experience')}
-        >
-          Experience
-        </NavLink>
-        <NavLink href="#projects" onClick={(e) => handleClick(e, 'projects')}>
-          Projects
-        </NavLink>
-        <NavLink href="#contact" onClick={(e) => handleClick(e, 'contact')}>
-          Contact
-        </NavLink>
+        {navItems.map((item) => (
+          <li key={item.id}>
+            <NavLink
+              $active={activeSection === item.id}
+              onClick={() => scrollToSection(item.id)}
+            >
+              {item.label}
+            </NavLink>
+          </li>
+        ))}
       </NavLinks>
     </Nav>
   );

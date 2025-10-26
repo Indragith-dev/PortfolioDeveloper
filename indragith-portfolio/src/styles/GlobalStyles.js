@@ -1,4 +1,3 @@
-// styles/GlobalStyles.js
 import { createGlobalStyle } from 'styled-components';
 
 export const GlobalStyles = createGlobalStyle`
@@ -10,17 +9,53 @@ export const GlobalStyles = createGlobalStyle`
 
   html {
     scroll-behavior: smooth;
+    background: #030014;
+    overflow-x: hidden;
   }
 
   body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background: #0a0a0a;
+    background: #030014;
     color: #ffffff;
+    min-height: 100vh;
     overflow-x: hidden;
     line-height: 1.6;
+    font-size: 14px;
   }
 
+  #root {
+    min-height: 100vh;
+    position: relative;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #030014;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #8b5cf6, #3b82f6);
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #7c3aed, #2563eb);
+  }
+
+  /* Selection */
   ::selection {
-    background: rgba(139, 92, 246, 0.3);
+    background: rgba(139, 92, 246, 0.4);
+    color: #ffffff;
+  }
+
+  /* Smooth transitions */
+  * {
+    transition-property: color, background-color, border-color, opacity;
+    transition-duration: 0.2s;
+    transition-timing-function: ease;
   }
 `;
