@@ -1,0 +1,21 @@
+/* Basic global styles for your portfolio */
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background-color: #0a0a0a;
+  color: white;
+  font-family: 'Poppins', sans-serif;
+  overflow-x: hidden;
+}
+
+#root {
+  height: 100%;
+}
+
+/* Smooth fade-in animation */
+* {
+  transition: all 0.3s ease-in-out;
+}
