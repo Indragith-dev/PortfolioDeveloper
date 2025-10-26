@@ -1,25 +1,43 @@
+// src/Components/Hero3D.js
 import { useRef } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, Sphere, MeshDistortMaterial } from '@react-three/drei';
+import { Sphere, MeshDistortMaterial } from '@react-three/drei';
+import styled from 'styled-components';
+
+const HeroContainer = styled.div`
+  width: 100%;
+  height: 100vh;
+  position: relative;
+  overflow: hidden;
+  background: radial-gradient(
+    ellipse at bottom,
+    #1a1a2e 0%,
+    #16213e 50%,
+    #0a0a0a 100%
+  );
+`;
 
 function AnimatedSphere() {
   const meshRef = useRef();
 
   useFrame((state) => {
     const t = state.clock.getElapsedTime();
-    meshRef.current.rotation.x = Math.sin(t / 4) / 8;
-    meshRef.current.rotation.y = Math.sin(t / 2) / 4;
-    meshRef.current.position.y = Math.sin(t / 1.5) / 10;
+    if (meshRef.current) {
+      meshRef.current.rotation.x = Math.sin(t / 4) / 8;
+      meshRef.current.rotation.y = Math.sin(t / 2) / 4;
+      meshRef.current.position.y = Math.sin(t / 1.5) / 10;
+    }
   });
 
   return (
-    <Sphere ref={meshRef} args={[1, 100, 200]} scale={2.5}>
+    <Sphere ref={meshRef} args={[1, 100, 200]} scale={2.2}>
       <MeshDistortMaterial
         color="#8b5cf6"
         attach="material"
-        distort={0.3}
-        speed={1.5}
-        roughness={0.2}
+        distort={0.4}
+        speed={2}
+        roughness={0.1}
+        metalness={0.2}
       />
     </Sphere>
   );
@@ -27,7 +45,7 @@ function AnimatedSphere() {
 
 function Hero3D() {
   return (
-    <div style={{ width: '100%', height: '100vh', position: 'relative' }}>
+    <HeroContainer>
       <Canvas
         camera={{ position: [0, 0, 5], fov: 75 }}
         style={{ background: 'transparent' }}
@@ -40,14 +58,8 @@ function Hero3D() {
           intensity={0.5}
         />
         <AnimatedSphere />
-        <OrbitControls
-          enableZoom={false}
-          enablePan={false}
-          maxPolarAngle={Math.PI / 2}
-          minPolarAngle={Math.PI / 2}
-        />
       </Canvas>
-    </div>
+    </HeroContainer>
   );
 }
 
