@@ -48,9 +48,9 @@ function EarthModel({ earthScale }) {
       // ONLY clouds rotate with Earth
       cloudsRef.current.rotation.y += 0.0008;
       cloudsRef.current.scale.set(
-        earthScale * 1.02,
-        earthScale * 1.02,
-        earthScale * 1.02
+        earthScale * 1.001,
+        earthScale * 1.001,
+        earthScale * 1.001
       );
     }
   });
