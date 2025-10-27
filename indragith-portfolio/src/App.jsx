@@ -34,7 +34,7 @@ function App() {
   const portfolioData = usePortfolioStore();
   const [scrollProgress, setScrollProgress] = useState(0);
   const [activeSection, setActiveSection] = useState('home');
-  const [earthScale, setEarthScale] = useState(1);
+  const [earthScale, setEarthScale] = useState(3);
   const [earthPosition, setEarthPosition] = useState({ x: 0, y: 0 });
   const sectionRefs = useRef([]);
 
