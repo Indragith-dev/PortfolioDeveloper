@@ -216,91 +216,102 @@ function OrbitingObjects() {
 }
 
 // Updated Lighting for new layout
+// Updated Lighting with sun light from left side
 function SceneLighting() {
-  const mainLightRef = useRef();
-  const astronautLightRef = useRef();
-  const earthLightRef = useRef();
+  const sunLightRef = useRef();
+  const earthFillLightRef = useRef();
+  const astronautFillLightRef = useRef();
 
   useFrame(() => {
     const time = Date.now() * 0.001;
 
-    if (mainLightRef.current) {
-      mainLightRef.current.intensity = 3.5 + Math.sin(time * 0.5) * 0.3;
+    // Sun light subtle variation
+    if (sunLightRef.current) {
+      sunLightRef.current.intensity = 4.0 + Math.sin(time * 0.5) * 0.2;
     }
 
-    if (astronautLightRef.current) {
-      astronautLightRef.current.intensity = 2.5 + Math.sin(time * 0.7) * 0.2;
+    // Earth fill light variation
+    if (earthFillLightRef.current) {
+      earthFillLightRef.current.intensity = 2.0 + Math.sin(time * 0.3) * 0.1;
     }
 
-    if (earthLightRef.current) {
-      earthLightRef.current.intensity = 4.0 + Math.sin(time * 0.3) * 0.4;
+    // Astronaut fill light variation (softer)
+    if (astronautFillLightRef.current) {
+      astronautFillLightRef.current.intensity =
+        1.5 + Math.sin(time * 0.7) * 0.1;
     }
   });
 
   return (
     <>
-      {/* Main directional light */}
+      {/* MAIN SUN LIGHT - COMING FROM LEFT SIDE */}
       <directionalLight
-        ref={mainLightRef}
-        position={[0, 5, 8]}
-        intensity={3.5}
-        color="#fff9e6"
+        ref={sunLightRef}
+        position={[-15, 5, 5]} // Strong left-side position
+        intensity={4.0}
+        color="#ffebc2" // Warm sunlight color
         castShadow
-        shadow-mapSize-width={1024}
-        shadow-mapSize-height={1024}
+        shadow-mapSize-width={2048}
+        shadow-mapSize-height={2048}
+        shadow-camera-left={-10}
+        shadow-camera-right={10}
+        shadow-camera-top={10}
+        shadow-camera-bottom={-10}
+        shadow-bias={-0.0001}
       />
 
-      {/* Light focused on Earth (right side) */}
+      {/* Fill light for Earth (right side) to prevent complete darkness */}
       <spotLight
-        ref={earthLightRef}
-        position={[6, 3, 4]}
-        intensity={4.0}
-        color="#e6f7ff"
-        distance={12}
-        angle={Math.PI / 4}
-        penumbra={0.5}
+        ref={earthFillLightRef}
+        position={[5, 3, 5]}
+        intensity={2.0}
+        color="#a0d2ff" // Cool blue fill light
+        distance={15}
+        angle={Math.PI / 6}
+        penumbra={0.7}
         target-position={[3, 0, 0]}
       />
 
-      {/* Light focused on Astronaut (left side) */}
+      {/* Soft fill light for astronaut (left side) */}
       <spotLight
-        ref={astronautLightRef}
-        position={[-6, 3, 4]}
-        intensity={2.5}
-        color="#ffffff"
-        distance={10}
-        angle={Math.PI / 5}
-        penumbra={0.3}
-        target-position={[-3, 0, 0]}
-      />
-
-      <directionalLight position={[0, -2, 5]} intensity={1.2} color="#4fa8ff" />
-
-      <pointLight
-        position={[-5, -1, -2]}
+        ref={astronautFillLightRef}
+        position={[-8, 0, 3]}
         intensity={1.5}
-        color="#ffaa66"
-        distance={15}
-      />
-
-      <pointLight
-        position={[5, -1, -2]}
-        intensity={1.8}
-        color="#66aaff"
+        color="#ffffff"
         distance={12}
+        angle={Math.PI / 4}
+        penumbra={0.8}
+        target-position={[-4, -1, 0]}
       />
 
-      <ambientLight intensity={0.4} color="#1a2a4a" />
+      {/* Additional rim light for astronaut */}
+      <pointLight
+        position={[-6, -2, -3]}
+        intensity={1.2}
+        color="#4fa8ff"
+        distance={8}
+      />
 
+      {/* Earth rim light */}
+      <pointLight
+        position={[8, -1, -2]}
+        intensity={1.0}
+        color="#66aaff"
+        distance={10}
+      />
+
+      {/* Reduced ambient light to enhance directional lighting effect */}
+      <ambientLight intensity={0.2} color="#1a2a4a" />
+
+      {/* Hemisphere light for basic scene illumination */}
       <hemisphereLight
         skyColor="#1a2a4a"
         groundColor="#2a1a4a"
-        intensity={0.3}
+        intensity={0.2}
       />
     </>
   );
 }
-
 // Loading fallback
 function LoadingFallback() {
   return (
@@ -350,20 +361,17 @@ function SpaceScene({ earthScale, earthPosition }) {
           <SimpleAstronautModel earthScale={earthScale} />
         </ErrorBoundary>
       </Suspense>
-      {/* Remove OrbitingObjects if you don't want moving satellites */}
-      {/* <OrbitingObjects /> */}
       <OrbitControls
         enableZoom={false}
         enablePan={false}
         enableRotate={false}
-        autoRotate={false} // Disabled auto rotate
+        autoRotate={false}
       />
     </>
   );
 }
 
 function Hero3D({ earthScale = 1.8, earthPosition = { x: 0, y: 0 } }) {
-  // Increased default earthScale from 1 to 1.8
   return (
     <div
       style={{
@@ -379,7 +387,7 @@ function Hero3D({ earthScale = 1.8, earthPosition = { x: 0, y: 0 } }) {
     >
       <Canvas
         camera={{
-          position: [0, 2, 10], // Moved camera back slightly to accommodate larger Earth
+          position: [0, 2, 10],
           fov: 45,
         }}
         gl={{
@@ -389,9 +397,13 @@ function Hero3D({ earthScale = 1.8, earthPosition = { x: 0, y: 0 } }) {
           toneMapping: THREE.ACESFilmicToneMapping,
           toneMappingExposure: 1.0,
         }}
-        shadows
+        shadows={{
+          enabled: true,
+          type: THREE.PCFSoftShadowMap,
+        }}
       >
         <color attach="background" args={['#000011']} />
+        <fog attach="fog" args={['#000011', 5, 20]} />
         <SpaceScene earthScale={earthScale} earthPosition={earthPosition} />
       </Canvas>
     </div>
