@@ -1,25 +1,28 @@
 import React from 'react';
 import styled from 'styled-components';
 
-const HeroSection = ({ id, scrollToSection }) => {
+const HeroSection = ({ id, scrollToSection, portfolioData }) => {
   return (
     <Section id={id} className="visible">
       <HeroContent>
-        <HeroLabel>Frontend Developer</HeroLabel>
+        <HeroLabel>
+          {portfolioData.hero?.label || 'Frontend Developer'}
+        </HeroLabel>
         <HeroTitle>
-          Building the <span>Future</span> of Web
+          {portfolioData.hero?.title || 'Building the'}{' '}
+          <span>{portfolioData.hero?.highlight || 'Future'}</span>{' '}
+          {portfolioData.hero?.subtitle || 'of Web'}
         </HeroTitle>
         <HeroSubtitle>
-          Crafting exceptional digital experiences with React, TypeScript, and
-          cutting-edge web technologies. Specializing in performance
-          optimization and 3D web applications.
+          {portfolioData.hero?.description ||
+            'Crafting exceptional digital experiences with React, TypeScript, and cutting-edge web technologies. Specializing in performance optimization and 3D web applications.'}
         </HeroSubtitle>
         <ButtonGroup>
           <PrimaryButton onClick={() => scrollToSection('projects')}>
-            View Work
+            {portfolioData.hero?.primaryButton || 'View Work'}
           </PrimaryButton>
           <SecondaryButton onClick={() => scrollToSection('contact')}>
-            Get in Touch
+            {portfolioData.hero?.secondaryButton || 'Get in Touch'}
           </SecondaryButton>
         </ButtonGroup>
       </HeroContent>
@@ -30,6 +33,7 @@ const HeroSection = ({ id, scrollToSection }) => {
 
 export default HeroSection;
 
+// ... (keep all the styled components the same)
 const Section = styled.section`
   min-height: 100vh;
   padding: 0 8%;

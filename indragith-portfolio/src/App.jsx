@@ -16,26 +16,30 @@ function App() {
     min-height: 100vh;
   `;
 
-  const EarthBackground = styled.div`
+  const ModelBackground = styled.div`
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100vh;
     z-index: 0;
-    pointer-events: none;
+    pointer-events: auto; // Changed to enable interactions
   `;
 
   const ContentWrapper = styled.div`
     position: relative;
     z-index: 2;
+    pointer-events: none; // Content doesn't block 3D interactions
+
+    & > * {
+      pointer-events: auto; // But individual sections can be interacted with
+    }
   `;
 
   const portfolioData = usePortfolioStore();
-  const [scrollProgress, setScrollProgress] = useState(0);
   const [activeSection, setActiveSection] = useState('home');
-  const [earthScale, setEarthScale] = useState(3);
-  const [earthPosition, setEarthPosition] = useState({ x: 0, y: 0 });
+  const [modelScale, setModelScale] = useState(2);
+  const [modelPosition, setModelPosition] = useState({ x: 0, y: 0 });
   const sectionRefs = useRef([]);
 
   useEffect(() => {
@@ -44,15 +48,14 @@ function App() {
       const docHeight =
         document.documentElement.scrollHeight - window.innerHeight;
       const progress = scrollTop / docHeight;
-      setScrollProgress(progress);
 
-      // Earth animation based on scroll
-      const scale = 1 + progress * 0.5; // Earth grows as you scroll
-      const xPos = progress * 100; // Earth moves sideways
-      const yPos = -progress * 50; // Earth moves up slightly
+      // Model animation based on scroll
+      const scale = 1.5 + progress * 0.3;
+      const xPos = progress * 50;
+      const yPos = -progress * 30;
 
-      setEarthScale(scale);
-      setEarthPosition({ x: xPos, y: yPos });
+      setModelScale(scale);
+      setModelPosition({ x: xPos, y: yPos });
 
       // Active section detection
       const sections = ['home', 'about', 'experience', 'projects', 'contact'];
@@ -101,14 +104,10 @@ function App() {
     <>
       <GlobalStyles />
       <AppContainer>
-        {/* Earth Background */}
-        <EarthBackground>
-          <Hero3D
-            scrollProgress={scrollProgress}
-            earthScale={earthScale}
-            earthPosition={earthPosition}
-          />
-        </EarthBackground>
+        {/* Model Background - Now interactive */}
+        <ModelBackground>
+          <Hero3D modelScale={modelScale} modelPosition={modelPosition} />
+        </ModelBackground>
 
         <Navbar
           activeSection={activeSection}

@@ -128,60 +128,167 @@ const AboutSection = React.forwardRef(({ id, portfolioData }, ref) => {
     }
   `;
 
+  const SkillsContainer = styled.div`
+    margin-top: 4rem;
+  `;
+
+  const SkillsGrid = styled.div`
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 3rem;
+    margin-top: 2rem;
+  `;
+
+  const SkillCategory = styled.div`
+    background: rgba(139, 92, 246, 0.05);
+    border: 1px solid rgba(139, 92, 246, 0.1);
+    border-radius: 16px;
+    padding: 2rem;
+    transition: all 0.3s ease;
+
+    &:hover {
+      border-color: rgba(139, 92, 246, 0.3);
+      transform: translateY(-4px);
+    }
+  `;
+
+  const SkillCategoryTitle = styled.h4`
+    font-size: 1.2rem;
+    color: #ffffff;
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+    background: linear-gradient(135deg, #8b5cf6, #3b82f6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  `;
+
+  const SkillList = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+  `;
+
+  const SkillItem = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    color: #d1d5db;
+    font-size: 0.95rem;
+
+    &::before {
+      content: '▸';
+      color: #8b5cf6;
+      font-size: 1.1rem;
+    }
+  `;
+
+  // Safely access portfolio data with fallbacks
+  const aboutData = portfolioData?.about || {};
+  const technicalSkills = portfolioData?.technicalSkills || {};
+  const softSkills = portfolioData?.softSkills || [];
+  const stats = aboutData.stats || [
+    { value: '3+', label: 'Years Experience' },
+    { value: '20+', label: 'Projects Completed' },
+    { value: '40%', label: 'Performance Gain' },
+  ];
+
   return (
     <Section id={id} ref={ref}>
       <TwoColumnLayout>
         <AboutContent>
           <SectionTitle>About Me</SectionTitle>
           <SectionSubtitle>
-            Transforming ideas into pixel-perfect realities
+            {aboutData.mission ||
+              'Transforming ideas into pixel-perfect realities'}
           </SectionSubtitle>
           <AboutText>
-            Full Stack Developer with a strong focus on frontend technologies,
-            currently working at MAV-S Innovations LLP. I specialize in creating
-            scalable, performant web applications using modern frameworks and
-            best practices.
+            {aboutData.intro ||
+              'Full Stack Developer with a strong focus on frontend technologies, currently working at MAV-S Innovations LLP. I specialize in creating scalable, performant web applications using modern frameworks and best practices.'}
           </AboutText>
           <AboutText>
-            My passion lies in pushing the boundaries of what's possible on the
-            web, from immersive 3D experiences to lightning-fast user
-            interfaces. I believe in writing clean, maintainable code that not
-            only works but delights users.
+            {portfolioData?.summary ||
+              "My passion lies in pushing the boundaries of what's possible on the web, from immersive 3D experiences to lightning-fast user interfaces. I believe in writing clean, maintainable code that not only works but delights users."}
           </AboutText>
         </AboutContent>
 
         <div>
           <StatsGrid>
-            <StatCard>
-              <StatValue>2+</StatValue>
-              <StatLabel>Years Exp</StatLabel>
-            </StatCard>
-            <StatCard>
-              <StatValue>20+</StatValue>
-              <StatLabel>Projects</StatLabel>
-            </StatCard>
-            <StatCard>
-              <StatValue>100%</StatValue>
-              <StatLabel>Quality</StatLabel>
-            </StatCard>
+            {stats.map((stat, index) => (
+              <StatCard key={index}>
+                <StatValue>{stat.value}</StatValue>
+                <StatLabel>{stat.label}</StatLabel>
+              </StatCard>
+            ))}
           </StatsGrid>
         </div>
       </TwoColumnLayout>
 
+      <SkillsContainer>
+        <h3
+          style={{ fontSize: '1.5rem', marginBottom: '2rem', color: '#ffffff' }}
+        >
+          Technologies & Skills
+        </h3>
+        <SkillsGrid>
+          {/* Technical Skills */}
+          <SkillCategory>
+            <SkillCategoryTitle>Technical Skills</SkillCategoryTitle>
+            <SkillList>
+              {technicalSkills.languages &&
+                technicalSkills.languages.map((skill, index) => (
+                  <SkillItem key={index}>{skill}</SkillItem>
+                ))}
+              {technicalSkills.frameworks &&
+                technicalSkills.frameworks.map((skill, index) => (
+                  <SkillItem key={index}>{skill}</SkillItem>
+                ))}
+              {technicalSkills.technologies &&
+                technicalSkills.technologies.map((skill, index) => (
+                  <SkillItem key={index}>{skill}</SkillItem>
+                ))}
+              {technicalSkills.tools &&
+                technicalSkills.tools.map((skill, index) => (
+                  <SkillItem key={index}>{skill}</SkillItem>
+                ))}
+            </SkillList>
+          </SkillCategory>
+
+          {/* Soft Skills */}
+          <SkillCategory>
+            <SkillCategoryTitle>Soft Skills</SkillCategoryTitle>
+            <SkillList>
+              {softSkills.map((skill, index) => (
+                <SkillItem key={index}>{skill}</SkillItem>
+              ))}
+            </SkillList>
+          </SkillCategory>
+
+          {/* Core Technologies */}
+          <SkillCategory>
+            <SkillCategoryTitle>Core Technologies</SkillCategoryTitle>
+            <SkillList>
+              {aboutData.skills &&
+                aboutData.skills.map((skill, index) => (
+                  <SkillItem key={index}>{skill}</SkillItem>
+                ))}
+            </SkillList>
+          </SkillCategory>
+        </SkillsGrid>
+      </SkillsContainer>
+
+      {/* Technologies Grid */}
       <div style={{ marginTop: '4rem' }}>
         <h3
-          style={{
-            fontSize: '1.5rem',
-            marginBottom: '2rem',
-            color: '#ffffff',
-          }}
+          style={{ fontSize: '1.5rem', marginBottom: '2rem', color: '#ffffff' }}
         >
           Technologies & Tools
         </h3>
         <TechGrid>
-          {portfolioData.about.skills.map((skill, index) => (
-            <TechChip key={index}>{skill}</TechChip>
-          ))}
+          {aboutData.skills &&
+            aboutData.skills.map((skill, index) => (
+              <TechChip key={index}>{skill}</TechChip>
+            ))}
         </TechGrid>
       </div>
     </Section>
